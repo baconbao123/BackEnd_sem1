@@ -11,6 +11,7 @@ class life_story extends Model
     protected $fillable=[
         'id',
         'person_id',
+        'life',
         'childhood',
         'education',
         'experiment',
