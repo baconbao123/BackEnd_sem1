@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class life_story extends Model
-{   
+{
     protected $table='life_story';
     protected $fillable=[
         'id',
@@ -20,7 +20,8 @@ class life_story extends Model
         'personalities',
         'achievements_detail',
         'quote',
-        'books'
+        'books',
+        'status'
     ];
     public function person() {
         return $this-> belongsTo(persons::class,'person_id','id');

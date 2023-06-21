@@ -18,9 +18,39 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+//person crud
 Route::get('/person',[webController::class,'person']);
-Route::get('nobel',[webController::class,'nobel']);
-Route::get('test',[webController::class,'test']);
+Route::get('/persondisable',[webController::class,'persondisable']);
+Route::post('addperson',[webController::class,'addperson']);
+Route::put('updateperson/{id}',[webController::class,'updateperson']);
+Route::put('disableperson/{id}',[webController::class,'disableperson']);
+Route::put('activeperson/{id}',[webController::class,'activeperson']);
+Route::delete('deleteperson/{id}',[webController::class,'deleteperson']);
+//life crud
+Route::get('/life',[webController::class,'life']);
+Route::get('/lifedisable',[webController::class,'lifedisable']);
+Route::post('/addlife',[webController::class,'addlife']);
+Route::put('/updatelife/{id}',[webController::class,'updatelife']);
+Route::put('/deletelife/{id}',[webController::class,'deletelife']);
 
 
+// prize crud
+Route::get('/prize',[webController::class,'prize']);
+Route::get('/prizedisable',[webController::class,'prizedisable']);
+Route::post('/addprize',[webController::class,'addprize']);
+Route::put('/updateprize/{id}',[webController::class,'updateprize']);
+Route::delete('/deleteprize/{id}',[webController::class,'deleteprize']);
+//person nobel crud
+Route::get('/pn',[webController::class,'pn']);
+Route::get('/pndisable',[webController::class,'pndisable']);
+Route::post('/addpn',[webController::class,'addpn']);
+Route::put('/updatepn/{person_id}/{nobel_id}',[webController::class,'updatepn']);
+Route::delete('/deletepn/{person_id}/{nobel_id}',[webController::class,'deletepn']);
+Route::get('/testpn',[webController::class,'testpn']);
+//life and person
+Route::get('/personlife ',[webController::class,'personlife']);
+//Person and Prize
+Route::get('/personprize ',[webController::class,'personprize']);
+//nobel and prize
+Route::get('/nobelprize ',[webController::class,'nobelprize']);
 
