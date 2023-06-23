@@ -55,6 +55,25 @@ Route::get('/personprize',[webController::class,'personprize']);
 //nobel and prize
 Route::get('/nobelprize ',[webController::class,'nobelprize']);
 
+<<<<<<< HEAD
 // CALL API FE-User
 // All Nobel Prize
 Route::get('/nobel-prizes',[FeController::class,'nobelprizes']);
+=======
+
+//api image
+Route::get('images/{filename}',function ($filename){
+    $path=public_path('img/'.$filename);
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header("Content-Type", $type);
+
+    return $response;
+});
+>>>>>>> 15aab884dec20681022b391da6225afd0e0f5504
