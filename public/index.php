@@ -16,6 +16,11 @@ define('LARAVEL_START', microtime(true));
 |
 */
 
+$allowedOrigins=array(
+    'http://127.0.0.1:8000',
+    'http://localhost:3000'
+);
+
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
 }

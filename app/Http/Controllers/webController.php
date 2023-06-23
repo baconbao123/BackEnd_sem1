@@ -31,13 +31,26 @@ class webController extends Controller
 
 //  Ham add person
     public  function  addperson(Request $request) {
+
+        $img=array();
+        $images=$request->file('img');
+            foreach($images as $image){
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'),$filename);
+                array_push($img,$filename);
+
+            }
+
+
+
         $user=new persons([
             'name'=>$request->input('name'),
             'birthdate'=>$request->input('birthdate'),
             'deathdate'=> $request-> input('deathdate'),
             'gender'=>$request->input('gender'),
             'national'=>$request->input('national'),
-            'img'=>$request->input('img'),
+            'img'=>  join(',',$img),
             'status'=>$request->input('status'),
         ]);
         $user->save();
@@ -47,8 +60,34 @@ class webController extends Controller
 //    Ham update person
     public function updateperson(Request $request, $id) {
         $user=persons::find($id);
-        $user->update($request->all());
-        return response()->json('Success updated');
+
+        if($request->has('image')) {
+            $img=array();
+            $images=$request->file('image');
+//                dd($images);
+            foreach($images as $image){
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'),$filename);
+                array_push($img,$filename);
+            }
+            $user->name = $request->input('name');
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+            $user->img = join(',', $img);
+            $user->status = $request->input('status');
+            $user->save();
+            return response()->json('Success updated');
+
+        }
+        else {
+            $user->update($request->all());
+        }
+
+
+
     }
 
 //    Ham disable person
