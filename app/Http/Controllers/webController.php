@@ -31,29 +31,93 @@ class webController extends Controller
 
 //  Ham add person
     public  function  addperson(Request $request) {
+            if($request->has('img')&& $request->has('pdf')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
 
-        $img=array();
-        $images=$request->file('img');
-            foreach($images as $image){
+                    'status'=>$request->input('status'),
+                ]);
+                $img=array();
+                $images=$request->file('img');
+                foreach($images as $image){
 
-                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('img'),$filename);
-                array_push($img,$filename);
+                    $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('img'),$filename);
+                    array_push($img,$filename);
 
+                }
+                $pdf=$request->file('pdf');
+                $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+                $pdf->move(public_path('pdf'),$pdfname);
+
+
+
+                $user->img= join(',',$img);
+                $user->pdf=$pdfname;
+                $user->save();
+            }
+            elseif ($request->has('img')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+
+                    'status'=>$request->input('status'),
+                ]);
+                $img=array();
+                $images=$request->file('img');
+                foreach($images as $image){
+
+                    $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('img'),$filename);
+                    array_push($img,$filename);
+
+                }
+
+
+
+
+                $user->img= join(',',$img);
+
+                $user->save();
+            }
+            elseif( $request->has('pdf')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+
+                    'status'=>$request->input('status'),
+                ]);
+                $pdf=$request->file('pdf');
+                $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+                $pdf->move(public_path('pdf'),$pdfname);
+
+
+
+                $user->pdf=$pdfname;
+                $user->save();
+            }
+            else {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+                    'status'=>$request->input('status'),
+                ]);
+                $user->save();
             }
 
-
-
-        $user=new persons([
-            'name'=>$request->input('name'),
-            'birthdate'=>$request->input('birthdate'),
-            'deathdate'=> $request-> input('deathdate'),
-            'gender'=>$request->input('gender'),
-            'national'=>$request->input('national'),
-            'img'=>  join(',',$img),
-            'status'=>$request->input('status'),
-        ]);
-        $user->save();
 
         return response()->json('success add person');
     }
@@ -247,10 +311,12 @@ class webController extends Controller
 //Person and  Prize
 
     public function personprize() {
-        $users=persons::where('status','active')->orderByDesc('created_at')->get();
+        $users=persons::orderByDesc('created_at')->get();
         foreach ($users as $user) {
-            $life[]= $user->nobel;
+            $prize[]= $user->nobel;
+            $life[]= $user->life_story;
         }
+
         return response()->json($users);
     }
 
