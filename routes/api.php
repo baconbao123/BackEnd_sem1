@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeController;
 use App\Http\Controllers\webController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,10 +51,15 @@ Route::get('/testpn',[webController::class,'testpn']);
 //life and person
 Route::get('/personlife ',[webController::class,'personlife']);
 //Person and Prize
-Route::get('/personprize ',[webController::class,'personprize']);
+Route::get('/personprize',[webController::class,'personprize']);
 //nobel and prize
 Route::get('/nobelprize ',[webController::class,'nobelprize']);
 
+<<<<<<< HEAD
+// CALL API FE-User
+// All Nobel Prize
+Route::get('/nobel-prizes',[FeController::class,'nobelprizes']);
+=======
 
 //api image
 Route::get('images/{filename}',function ($filename){
@@ -70,6 +76,7 @@ Route::get('images/{filename}',function ($filename){
 
     return $response;
 });
+<<<<<<< HEAD
 
 //api pdf
 Route::get('pdfs/{filename}',function ($filename){
@@ -86,3 +93,6 @@ Route::get('pdfs/{filename}',function ($filename){
 
     return $response;
 });
+=======
+>>>>>>> 15aab884dec20681022b391da6225afd0e0f5504
+>>>>>>> abb6312c1164930e8383bb3eda4c63bd8f2faa9f
