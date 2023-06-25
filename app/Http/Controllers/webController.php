@@ -6,7 +6,7 @@ use App\Models\persons;
 use App\Models\life_story;
 use App\Models\nobel_prizes;
 use App\Models\person_nobel;
-
+use App\Models\blog;
 
 
 
@@ -32,19 +32,10 @@ class webController extends Controller
         return response()->json($user);
     }
 
-<<<<<<< HEAD
-    //  Ham add person
-    public  function  addperson(Request $request)
-    {
-        $user = new persons([
-            'name' => $request->input('name'),
-            'birthdate' => $request->input('birthdate'),
-            'deathdate' => $request->input('deathdate'),
-            'gender' => $request->input('gender'),
-            'national' => $request->input('national'),
-            'img' => $request->input('img'),
-            'status' => $request->input('status'),
-=======
+
+  
+           
+
 //  Ham add person
     public  function  addperson(Request $request) {
             if($request->has('img')&& $request->has('pdf')) {
@@ -135,40 +126,22 @@ class webController extends Controller
             }
 
 
-<<<<<<< HEAD
-=======
+      
+        
 
-        $user=new persons([
-            'name'=>$request->input('name'),
-            'birthdate'=>$request->input('birthdate'),
-            'deathdate'=> $request-> input('deathdate'),
-            'gender'=>$request->input('gender'),
-            'national'=>$request->input('national'),
-            'img'=>  join(',',$img),
-            'status'=>$request->input('status'),
->>>>>>> 15aab884dec20681022b391da6225afd0e0f5504
-        ]);
-        $user->save();
-
->>>>>>> abb6312c1164930e8383bb3eda4c63bd8f2faa9f
         return response()->json('success add person');
     }
-<<<<<<< HEAD
-    //    Ham update person
-    public function updateperson(Request $request, $id)
-    {
-        $user = persons::find($id);
-        $user->update($request->all());
-        return response()->json('Success updated');
-=======
+ 
 //    Ham update person
     public function updateperson(Request $request, $id) {
         $user=persons::find($id);
 
-        if($request->has('image')) {
+        if($request->has('image') && $request->has('pdf')) {
             $img=array();
             $images=$request->file('image');
-//                dd($images);
+            $pdf=$request->file('pdf');
+            $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+            $pdf->move(public_path('pdf'),$pdfname);
             foreach($images as $image){
 
                 $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
@@ -182,17 +155,53 @@ class webController extends Controller
             $user->national = $request->input('national');
             $user->img = join(',', $img);
             $user->status = $request->input('status');
+            $user->pdf=$pdf;
             $user->save();
             return response()->json('Success updated');
 
+        }
+        else if ($request->has('image')){
+            $img=array();
+            $images=$request->file('image');
+          
+            foreach($images as $image){
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'),$filename);
+                array_push($img,$filename);
+            }
+            $user->name = $request->input('name');
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+            $user->img = join(',', $img);
+            $user->status = $request->input('status');
+          
+            $user->save();
+            return response()->json('Success updated');
+        }
+        else if($request->has('pdf')) {
+          
+            $pdf=$request->file('pdf');
+            $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+            $pdf->move(public_path('pdf'),$pdfname);
+           
+            $user->name = $request->input('name');
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+         
+            $user->status = $request->input('status');
+            $user->pdf=$pdf;
+            $user->save();
+            return response()->json('Success updated');
         }
         else {
             $user->update($request->all());
         }
 
-
-
->>>>>>> 15aab884dec20681022b391da6225afd0e0f5504
     }
 
     //    Ham disable person
@@ -371,19 +380,11 @@ class webController extends Controller
     }
     //Person and  Prize
 
-<<<<<<< HEAD
     public function personprize() {
         $users=persons::orderByDesc('created_at')->get();
         foreach ($users as $user) {
             $prize[]= $user->nobel;
             $life[]= $user->life_story;
-=======
-    public function personprize()
-    {
-        $users = persons::where('status', 'active')->orderByDesc('created_at')->get();
-        foreach ($users as $user) {
-            $life[] = $user->nobel;
->>>>>>> abb6312c1164930e8383bb3eda4c63bd8f2faa9f
         }
 
         return response()->json($users);
@@ -401,6 +402,11 @@ class webController extends Controller
 
 
     //------------------------------------------------
-
+    // Ham blog
+    // Ham show blog 
+    public function showblog () {
+        $blog=blog::where('status','active')->get();
+        return response()->json($blog);
+    }
 
 }
