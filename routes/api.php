@@ -97,3 +97,5 @@ Route::get('pdfs/{filename}',function ($filename){
 // Blog 
 Route::get('/blog',[WebController::class,'showblog']);
 
+// FE
+Route::get('/persons/{id}', [FeController::class, 'show']);
