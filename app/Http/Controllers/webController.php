@@ -9,8 +9,7 @@ use App\Models\person_nobel;
 use App\Models\blog;
 
 
-
-
+use http\Env\Response;
 use Illuminate\Http\Request;
 
 class webController extends Controller
@@ -33,8 +32,8 @@ class webController extends Controller
     }
 
 
-  
-           
+
+
 
 //  Ham add person
     public  function  addperson(Request $request) {
@@ -126,12 +125,12 @@ class webController extends Controller
             }
 
 
-      
-        
+
+
 
         return response()->json('success add person');
     }
- 
+
 //    Ham update person
     public function updateperson(Request $request, $id) {
         $user=persons::find($id);
@@ -163,7 +162,7 @@ class webController extends Controller
         else if ($request->has('image')){
             $img=array();
             $images=$request->file('image');
-          
+
             foreach($images as $image){
 
                 $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
@@ -177,30 +176,32 @@ class webController extends Controller
             $user->national = $request->input('national');
             $user->img = join(',', $img);
             $user->status = $request->input('status');
-          
+
             $user->save();
             return response()->json('Success updated');
         }
         else if($request->has('pdf')) {
-          
+
             $pdf=$request->file('pdf');
             $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
             $pdf->move(public_path('pdf'),$pdfname);
-           
+
             $user->name = $request->input('name');
             $user->birthdate = $request->input('birthdate');
             $user->deathdate = $request->input('deathdate');
             $user->gender = $request->input('gender');
             $user->national = $request->input('national');
-         
+
             $user->status = $request->input('status');
-            $user->pdf=$pdf;
+            $user->pdf=$pdfname;
             $user->save();
             return response()->json('Success updated');
         }
         else {
             $user->update($request->all());
+            return  response()->json("Success updated");
         }
+
 
     }
 
@@ -209,6 +210,7 @@ class webController extends Controller
     {
         $user = persons::find($id);
         $user->update($request->all());
+
         return response()->json('success disable');
     }
     // Ham active person
@@ -403,10 +405,89 @@ class webController extends Controller
 
     //------------------------------------------------
     // Ham blog
-    // Ham show blog 
+    // Ham show blog
     public function showblog () {
         $blog=blog::where('status','active')->get();
         return response()->json($blog);
     }
+    public function showdisableblog () {
+        $blog=blog::where('status','disable')->get();
+        return response()->json($blog);
+    }
+
+    public function addblog (Request $request) {
+        if($request->has('img')) {
+            $blog = new blog([
+                'title' => $request->input('title'),
+                'author' => $request->input('author'),
+                'content' => $request->input('content'),
+
+                'status' => $request->input('status'),
+            ]);
+            $img = array();
+            $images = $request->file('img');
+            foreach ($images as $image) {
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'), $filename);
+                array_push($img, $filename);
+            }
+            $blog->img = join(',', $img);
+            $blog->save();
+
+        }
+        else {
+
+
+//                dd($request->input('status'));
+            $blog= new blog([
+                'title'=>$request->input('title'),
+                'author'=>$request->input('author'),
+                'content'=>$request->input('content'),
+
+                'status'=>$request->input('status'),
+            ]);
+            $blog->save();
+        }
+
+        return response()->json("add success");
+        }
+
+
+        public  function updateblog(Request $request,$id) {
+        $blog=blog::find($id);
+        if($request->has('img')) {
+
+            $blog->title=$request->input('title');
+            $blog->author=$request->input('author');
+            $blog->status=$request->input('status');
+            $images = $request->file('img');
+            $img=array();
+            foreach ($images as $image) {
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'), $filename);
+                array_push($img, $filename);
+            }
+            $blog->img = join(',', $img);
+            $blog->save();
+            return response()->json('update success');
+        }
+        else {
+
+            $blog->update($request->all());
+        }
+        }
+
+        public  function deleteblog($id) {
+        $blog=blog::find($id);
+        $blog->delete();
+        return response()->json('Delete success');
+        }
+
+
+
+
+
 
 }

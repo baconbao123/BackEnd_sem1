@@ -94,8 +94,13 @@ Route::get('pdfs/{filename}',function ($filename){
     return $response;
 });
 
-// Blog 
+// Blog
 Route::get('/blog',[WebController::class,'showblog']);
+
+Route::get('/disableblog',[WebController::class,'showdisableblog']);
+Route::post('addblog',[webController::class,'addblog']);
+Route::put('updateblog/{id}',[webController::class,'updateblog']);
+Route::delete('deleteblog/{id}',[webController::class,'deleteblog']);
 
 // FE
 Route::get('/persons/{id}', [FeController::class, 'show']);
