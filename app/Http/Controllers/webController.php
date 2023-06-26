@@ -155,7 +155,7 @@ class webController extends Controller
             $user->national = $request->input('national');
             $user->img = join(',', $img);
             $user->status = $request->input('status');
-            $user->pdf=$pdf;
+            $user->pdf=$pdfname;
             $user->save();
             return response()->json('Success updated');
 
