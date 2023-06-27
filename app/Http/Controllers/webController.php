@@ -7,6 +7,8 @@ use App\Models\life_story;
 use App\Models\nobel_prizes;
 use App\Models\person_nobel;
 use App\Models\blog;
+use App\Models\users;
+
 
 
 use http\Env\Response;
@@ -485,7 +487,23 @@ class webController extends Controller
         return response()->json('Delete success');
         }
 
+//LOGIN AND LOGOUT
+    public function login(Request $request) {
+        $user=users::where('email',$request->email)->where('password',$request->password)->first();
+       if($user) {
+           $request->session()->put('user',$user['email']);
+           return response()->json([session('user')]);
+       }
+       else {
+           dd($request->all());
+           return response()->json('login fail');
+       }
+    }
 
+    public  function logout(Request $request) {
+        session(['user' => null]);
+        return response()->json('logout sucess');
+    }
 
 
 

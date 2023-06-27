@@ -100,3 +100,6 @@ Route::get('/disableblog',[WebController::class,'showdisableblog']);
 Route::post('addblog',[webController::class,'addblog']);
 Route::put('updateblog/{id}',[webController::class,'updateblog']);
 Route::delete('deleteblog/{id}',[webController::class,'deleteblog']);
+//Login
+Route::post('login',[webController::class,'login']);
+Route::get('logout',[webController::class,'logout']);
