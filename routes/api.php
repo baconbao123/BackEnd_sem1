@@ -100,3 +100,8 @@ Route::get('/disableblog',[WebController::class,'showdisableblog']);
 Route::post('addblog',[webController::class,'addblog']);
 Route::put('updateblog/{id}',[webController::class,'updateblog']);
 Route::delete('deleteblog/{id}',[webController::class,'deleteblog']);
+
+
+//-----------------API Nobel Prizes and Detail-----------------------------------------------------
+Route::get('/personprizes ',[FeController::class,'personprizes']);
+Route::get('/nobel-prizes/{name}/{year}/{id} ',[FeController::class,'getPrizeDetails']);
