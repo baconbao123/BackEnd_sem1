@@ -116,3 +116,11 @@ Route::get('/allpersons', [FeController::class, 'allshow']);
 
 Route::get('/blogs/{id}', [BlogController::class, 'blog']);
 Route::get('/allblogs', [FeController::class, 'blogs']);
+//Login
+Route::post('login',[webController::class,'login']);
+Route::get('logout',[webController::class,'logout']);
+
+
+//-----------------API Nobel Prizes and Detail-----------------------------------------------------
+Route::get('/personprizes ',[FeController::class,'personprizes']);
+Route::get('/nobel-prizes/{name}/{year}/{id} ',[FeController::class,'getPrizeDetails']);
