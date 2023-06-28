@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\person_nobel;
 use App\Models\nobel_prizes;
 use App\Models\persons;
+use App\Models\blog;
 use Illuminate\Http\Request;
 
 class FeController extends Controller
@@ -15,7 +16,7 @@ class FeController extends Controller
         return response()->json($pn);
     }
 
-    public function show() {
+    public function show($id) {
         $persons = persons::select(
             'nobel_prizes.nobel_name',
             'nobel_prizes.nobel_year',
@@ -31,15 +32,54 @@ class FeController extends Controller
             'life_story.achievements_detail',
             'life_story.time_line',
             'life_story.quote',
+            'life_story.struggles',
             'persons.img',    
-            'persons.pdf'
+            'persons.pdf',
+            'persons.status as personsstatus',
+            'life_story.status as lifestatus',
+            'nobel_prizes.status as nobelprizesstatus',
         )
         ->join('person_nobel', 'person_id', '=', 'person_nobel.person_id')
         ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
         ->leftJoin('life_story', 'persons.id', '=', 'life_story.person_id')
-        // ->leftJoin('mutiple_images', 'persons.id', '=', 'mutiple_images.person_id')
+        ->where('persons.id', $id)
+        ->first();
+
+        return response()->json(['persons' => $persons]);
+    }
+
+    public function allshow() {
+        $persons = persons::select(
+            'nobel_prizes.nobel_name',
+            'nobel_prizes.nobel_year',
+            'nobel_prizes.status',
+            'persons.id',
+            'persons.name',
+            'persons.img',
+            'persons.status',
+        )
+        ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
+        ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
         ->get();
 
         return response()->json(['persons' => $persons]);
+    }
+
+    // public function blog($id) {
+    //     $blog = blog::select(
+    //         'blog.title',
+    //         'blog.author',
+    //         'blog.content',
+    //         'blog.img',
+    //         'blog.status', 
+    //         'blog.id'
+    //     )
+    //     ->where('id', $id)->first();
+    //     return response()->json(['blog' => $blog]);
+    // }
+
+    public function blogs() {
+        $blogs = blog::all();
+        return response()->json(['blogs' => $blogs]);
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FeController;
 use App\Http\Controllers\webController;
+use App\Http\Controllers\BlogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -102,5 +103,16 @@ Route::post('addblog',[webController::class,'addblog']);
 Route::put('updateblog/{id}',[webController::class,'updateblog']);
 Route::delete('deleteblog/{id}',[webController::class,'deleteblog']);
 
+
+
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+
+
 // FE
 Route::get('/persons/{id}', [FeController::class, 'show']);
+Route::get('/allpersons', [FeController::class, 'allshow']);
+
+Route::get('/blogs/{id}', [BlogController::class, 'blog']);
+Route::get('/allblogs', [FeController::class, 'blogs']);
