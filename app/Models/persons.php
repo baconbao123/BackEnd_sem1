@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class persons extends Model
 {
     protected $table='persons';
-    protected $fillable=['id','name','birthdate','deathdate','gender','national','img','status','pdf'];
+    protected $fillable=['id','name','birthdate','deathdate','gender','national','img','status','pdf','avatar'];
     public function life_story() {
         return $this->hasOne(life_story::class,'person_id','id');
     }

@@ -39,14 +39,13 @@ class webController extends Controller
 
 //  Ham add person
     public  function  addperson(Request $request) {
-            if($request->has('img')&& $request->has('pdf')) {
+            if($request->has('img')&& $request->has('pdf') && $request->has('avatar')) {
                 $user=new persons([
                     'name'=>$request->input('name'),
                     'birthdate'=>$request->input('birthdate'),
                     'deathdate'=> $request-> input('deathdate'),
                     'gender'=>$request->input('gender'),
                     'national'=>$request->input('national'),
-
                     'status'=>$request->input('status'),
                 ]);
                 $img=array();
@@ -58,14 +57,80 @@ class webController extends Controller
                     array_push($img,$filename);
 
                 }
+                $avatar=$request->file('avatar');
+                $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path('img'),$fileAvatar);
+
                 $pdf=$request->file('pdf');
                 $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
                 $pdf->move(public_path('pdf'),$pdfname);
-
-
-
                 $user->img= join(',',$img);
+                $user->avatar=$fileAvatar;
                 $user->pdf=$pdfname;
+                $user->save();
+            }
+            elseif ($request->has('img')&&$request->has('avatar')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+                    'status'=>$request->input('status'),
+                ]);
+                $img=array();
+                $images=$request->file('img');
+                foreach($images as $image){
+
+                    $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('img'),$filename);
+                    array_push($img,$filename);
+
+                }
+                $avatar=$request->file('avatar');
+                $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path('img'),$fileAvatar);
+                $user->avatar=$fileAvatar;
+                $user->img= join(',',$img);
+
+                $user->save();
+            }
+            elseif( $request->has('pdf')&&$request->has('avatar')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+                    'status'=>$request->input('status'),
+                ]);
+                $pdf=$request->file('pdf');
+                $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+                $pdf->move(public_path('pdf'),$pdfname);
+                $avatar=$request->file('avatar');
+                $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path('img'),$fileAvatar);
+                $user->avatar=$fileAvatar;
+
+                $user->pdf=$pdfname;
+                $user->save();
+            }
+            elseif ($request->has('avatar')) {
+                $user=new persons([
+                    'name'=>$request->input('name'),
+                    'birthdate'=>$request->input('birthdate'),
+                    'deathdate'=> $request-> input('deathdate'),
+                    'gender'=>$request->input('gender'),
+                    'national'=>$request->input('national'),
+                    'status'=>$request->input('status'),
+                ]);
+
+                $avatar=$request->file('avatar');
+                $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+                $avatar->move(public_path('img'),$fileAvatar);
+                $user->avatar=$fileAvatar;
+
+
                 $user->save();
             }
             elseif ($request->has('img')) {
@@ -75,7 +140,6 @@ class webController extends Controller
                     'deathdate'=> $request-> input('deathdate'),
                     'gender'=>$request->input('gender'),
                     'national'=>$request->input('national'),
-
                     'status'=>$request->input('status'),
                 ]);
                 $img=array();
@@ -89,27 +153,22 @@ class webController extends Controller
                 }
 
 
-
-
                 $user->img= join(',',$img);
 
                 $user->save();
             }
-            elseif( $request->has('pdf')) {
+            else if($request->has('pdf')) {
                 $user=new persons([
                     'name'=>$request->input('name'),
                     'birthdate'=>$request->input('birthdate'),
                     'deathdate'=> $request-> input('deathdate'),
                     'gender'=>$request->input('gender'),
                     'national'=>$request->input('national'),
-
                     'status'=>$request->input('status'),
                 ]);
                 $pdf=$request->file('pdf');
                 $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
                 $pdf->move(public_path('pdf'),$pdfname);
-
-
 
                 $user->pdf=$pdfname;
                 $user->save();
@@ -137,7 +196,7 @@ class webController extends Controller
     public function updateperson(Request $request, $id) {
         $user=persons::find($id);
 
-        if($request->has('image') && $request->has('pdf')) {
+        if($request->has('image') && $request->has('pdf') && $request->has('avatar')) {
             $img=array();
             $images=$request->file('image');
             $pdf=$request->file('pdf');
@@ -149,6 +208,15 @@ class webController extends Controller
                 $image->move(public_path('img'),$filename);
                 array_push($img,$filename);
             }
+
+
+            $avatar=$request->file('avatar');
+            $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$fileAvatar);
+            $user->avatar=$fileAvatar;
+
+            $user->pdf=$pdfname;
+            $user->save();
             $user->name = $request->input('name');
             $user->birthdate = $request->input('birthdate');
             $user->deathdate = $request->input('deathdate');
@@ -161,7 +229,7 @@ class webController extends Controller
             return response()->json('Success updated');
 
         }
-        else if ($request->has('image')){
+        else if ($request->has('image') ){
             $img=array();
             $images=$request->file('image');
 
@@ -196,6 +264,68 @@ class webController extends Controller
 
             $user->status = $request->input('status');
             $user->pdf=$pdfname;
+            $user->save();
+            return response()->json('Success updated');
+        }
+        elseif ($request->has('image') && $request->has('avatar') ) {
+            $img=array();
+            $images=$request->file('image');
+
+            foreach($images as $image){
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'),$filename);
+                array_push($img,$filename);
+            }
+            $avatar=$request->file('avatar');
+            $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$fileAvatar);
+            $user->avatar=$fileAvatar;
+
+            $user->name = $request->input('name');
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+            $user->img = join(',', $img);
+            $user->status = $request->input('status');
+
+            $user->save();
+            return response()->json('Success updated');
+        }
+        elseif($request->has('pdf') && $request->has('avatar')) {
+
+            $pdf=$request->file('pdf');
+            $pdfname=time() . '_' . mt_rand(1000, 9999) . '.' . $pdf->getClientOriginalExtension();
+            $pdf->move(public_path('pdf'),$pdfname);
+
+            $avatar=$request->file('avatar');
+            $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$fileAvatar);
+            $user->avatar=$fileAvatar;
+
+            $user->name = $request->input('name');
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+
+            $user->status = $request->input('status');
+            $user->pdf=$pdfname;
+            $user->save();
+            return response()->json('Success updated');
+        }
+        elseif($request->has('avatar')) {
+            $avatar=$request->file('avatar');
+            $fileAvatar=time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$fileAvatar);
+            $user->avatar=$fileAvatar;
+            $user->birthdate = $request->input('birthdate');
+            $user->deathdate = $request->input('deathdate');
+            $user->gender = $request->input('gender');
+            $user->national = $request->input('national');
+
+            $user->status = $request->input('status');
             $user->save();
             return response()->json('Success updated');
         }
