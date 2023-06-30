@@ -467,6 +467,7 @@ class webController extends Controller
     public function pndisable()
     {
         $pn = person_nobel::where('status', 'disable')->orderByDesc('created_at')->get();
+
         return response()->json($pn);
     }
     //    ham add pn
