@@ -15,7 +15,8 @@ class BlogController extends Controller
             'blog.content',
             'blog.img',
             'blog.status', 
-            'blog.id'
+            'blog.id',
+            'blog.avatar'
         )
         ->where('blog.id', $id)->first();
         return response()->json(['blog' => $blog]);

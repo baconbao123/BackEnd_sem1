@@ -130,21 +130,23 @@ class FeController extends Controller
 
     public function show($id) {
         $persons = persons::select(
+            'persons.id',
+            'persons.name',
+            'persons.national',
             'nobel_prizes.nobel_name',
             'nobel_prizes.nobel_year',
-            'persons.national',
-            'persons.name',
-            'persons.id',
             'persons.birthdate',
             'persons.deathdate',
             'person_nobel.motivation',
+            'life_story.books',
             'person_nobel.nobel_share',
             'life_story.life',
-            'life_story.experiment',
+            'life_story.education',
+            'life_story.experiment as work',
+            'life_story.struggles',
             'life_story.achievements_detail',
             'life_story.time_line',
             'life_story.quote',
-            'life_story.struggles',
             'persons.img',    
             'persons.pdf',
             'persons.status as personsstatus',
@@ -169,6 +171,7 @@ class FeController extends Controller
             'persons.name',
             'persons.img',
             'persons.status',
+            'persons.avatar',
         )
         ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
         ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
@@ -176,19 +179,6 @@ class FeController extends Controller
 
         return response()->json(['persons' => $persons]);
     }
-
-    // public function blog($id) {
-    //     $blog = blog::select(
-    //         'blog.title',
-    //         'blog.author',
-    //         'blog.content',
-    //         'blog.img',
-    //         'blog.status', 
-    //         'blog.id'
-    //     )
-    //     ->where('id', $id)->first();
-    //     return response()->json(['blog' => $blog]);
-    // }
 
     public function blogs() {
         $blogs = blog::all();
