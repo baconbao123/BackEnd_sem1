@@ -548,12 +548,35 @@ class webController extends Controller
     }
 
     public function addblog (Request $request) {
-        if($request->has('img')) {
+        if($request->has('img') && $request->has('avatar')) {
+//            dd($request->all());
             $blog = new blog([
                 'title' => $request->input('title'),
                 'author' => $request->input('author'),
                 'content' => $request->input('content'),
+                'status' => $request->input('status'),
+            ]);
+            $img = array();
+            $images = $request->file('img');
+            foreach ($images as $image) {
 
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'), $filename);
+                array_push($img, $filename);
+            }
+            $avatar=$request->file('avatar');
+            $avatarName= time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$avatarName);
+            $blog->avatar=$avatarName;
+            $blog->img = join(',', $img);
+            $blog->save();
+
+        }
+        elseif($request->has('img')) {
+            $blog = new blog([
+                'title' => $request->input('title'),
+                'author' => $request->input('author'),
+                'content' => $request->input('content'),
                 'status' => $request->input('status'),
             ]);
             $img = array();
@@ -566,12 +589,11 @@ class webController extends Controller
             }
             $blog->img = join(',', $img);
             $blog->save();
-
         }
         else {
 
 
-//                dd($request->input('status'));
+//
             $blog= new blog([
                 'title'=>$request->input('title'),
                 'author'=>$request->input('author'),
@@ -588,7 +610,7 @@ class webController extends Controller
 
         public  function updateblog(Request $request,$id) {
         $blog=blog::find($id);
-        if($request->has('img')) {
+        if($request->has('img')&& $request->has('avatar')) {
 
             $blog->title=$request->input('title');
             $blog->author=$request->input('author');
@@ -601,7 +623,39 @@ class webController extends Controller
                 $image->move(public_path('img'), $filename);
                 array_push($img, $filename);
             }
+            $avatar=$request->file('avatar');
+            $avatarName= time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$avatarName);
+            $blog->avatar=$avatarName;
             $blog->img = join(',', $img);
+            $blog->save();
+            return response()->json('update success');
+        }
+        elseif ($request->has('img')) {
+            $blog->title=$request->input('title');
+            $blog->author=$request->input('author');
+            $blog->status=$request->input('status');
+            $images = $request->file('img');
+            $img=array();
+            foreach ($images as $image) {
+
+                $filename = time() . '_' . mt_rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('img'), $filename);
+                array_push($img, $filename);
+            }
+            $blog->img = join(',', $img);
+            $blog->save();
+            return response()->json('update success');
+        }
+        elseif ($request->has('avatar')) {
+            $blog->title=$request->input('title');
+            $blog->author=$request->input('author');
+            $blog->status=$request->input('status');
+
+            $avatar=$request->file('avatar');
+            $avatarName= time() . '_' . mt_rand(1000, 9999) . '.' . $avatar->getClientOriginalExtension();
+            $avatar->move(public_path('img'),$avatarName);
+            $blog->avatar=$avatarName;
             $blog->save();
             return response()->json('update success');
         }
