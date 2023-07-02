@@ -206,15 +206,12 @@ class FeController extends Controller
     {
         $persons = persons::select(
             'persons.id',
+            'persons.avatar',
             'persons.name',
             'persons.national',
-            'nobel_prizes.nobel_name',
-            'nobel_prizes.nobel_year',
             'persons.birthdate',
             'persons.deathdate',
-            'person_nobel.motivation',
             'life_story.books',
-            'person_nobel.nobel_share',
             'life_story.life',
             'life_story.education',
             'life_story.experiment as work',
@@ -234,9 +231,25 @@ class FeController extends Controller
             ->leftJoin('life_story', 'persons.id', '=', 'life_story.person_id')
             ->where('persons.id', $id)
             ->first();
+        
+        $nobelNames = $persons->nobel()->pluck('nobel_name');
+        $persons->nobelNames = $nobelNames;
+        
+        $nobelYears = $persons->nobel->pluck('nobel_year');
+        $persons->nobelYears = $nobelYears;
 
+        $motivations = person_nobel::select('motivation')
+            ->join('persons', 'persons.id', '=', 'person_nobel.person_id')
+            ->where('persons.id', $persons->id)
+            ->where('persons.name', $persons->name)
+            ->get();
+
+        $motivations = $motivations->pluck('motivation');
+
+        $persons->motivations = $motivations;
         return response()->json(['persons' => $persons]);
     }
+    
 
     public function allshow()
     {
