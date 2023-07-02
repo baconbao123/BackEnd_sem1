@@ -24,6 +24,12 @@ class webController extends Controller
 
         return response()->json($user);
     }
+    public function allperson()
+    {
+        $user = persons::orderByDesc('created_at')->get();
+
+        return response()->json($user);
+    }
 
     //    Ham show person active
     public function persondisable()
@@ -523,7 +529,7 @@ class webController extends Controller
     //Person and  Prize
 
     public function personprize() {
-        $users=persons::orderByDesc('created_at')->get();
+        $users=persons::where('status','active')->orderByDesc('created_at')->get();
         foreach ($users as $user) {
             $prize[]= $user->nobel;
             $life[]= $user->life_story;

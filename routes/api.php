@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 //person crud
 Route::get('/person',[webController::class,'person']);
+Route::get('/allperson',[webController::class,'allperson']);
 Route::get('/persondisable',[webController::class,'persondisable']);
 Route::post('addperson',[webController::class,'addperson']);
 Route::put('updateperson/{id}',[webController::class,'updateperson']);
