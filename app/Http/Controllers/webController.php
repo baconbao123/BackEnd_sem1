@@ -13,7 +13,7 @@ use App\Models\users;
 
 use http\Env\Response;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 class webController extends Controller
 {
     //    Person
@@ -39,6 +39,13 @@ class webController extends Controller
 
 //  Ham add person
     public  function  addperson(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'deathdate' => 'nullable|date|before:today|before_or_equal:birthdate',
+            'birthdate' => 'nullable|date|before:today',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['Birthdate or Deathdate is invalid' => $validator->errors()], 400);
+        }
             if($request->has('img')&& $request->has('pdf') && $request->has('avatar')) {
                 $user=new persons([
                     'name'=>$request->input('name'),
