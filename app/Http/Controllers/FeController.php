@@ -200,6 +200,75 @@ class FeController extends Controller
             ]
         );
     }
+    // getRelatedAwards
+    public function getRelatedAwards(Request $request, $name, $year)
+    {
+        $prizeDetails = persons::select(
+            'nobel_prizes.id',
+            'nobel_prizes.nobel_year',
+            'nobel_prizes.nobel_name',
+            'persons.id AS person_id',
+            'persons.name',
+            'person_nobel.motivation',
+            'nobel_prizes.status',
+            'persons.img',
+            'persons.avatar'
+        )
+            ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
+            ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
+            ->where('nobel_prizes.nobel_name', $name)
+            ->get()
+            ->toArray();
+
+        $groupedPersonPrizes = collect($prizeDetails)->groupBy('nobel_year')->map(function ($group) {
+            $year = $group[0]['nobel_year'];
+
+            $nobelPrizes = $group->groupBy('nobel_name')->map(function ($subGroup) {
+                $id = $subGroup[0]['id'];
+                $namePrize = $subGroup[0]['nobel_name'];
+
+                $persons = $subGroup->map(function ($person) {
+                    return [
+                        'id_person' => $person['person_id'], // Retrieve the person ID
+                        'name' => $person['name'],
+                        'avatar' => $person['avatar'],
+                        'img' => isset($person['img']) ? [$person['img']] : [],
+                    ];
+                })->values()->toArray();
+
+                $motivation = $subGroup[0]['motivation'];
+                $status = $subGroup[0]['status'];
+
+                return [
+                    'id' => $id,
+                    'namePrize' => $namePrize,
+                    'persons' => $persons,
+                    'motivation' => $motivation,
+                    'status' => $status,
+                ];
+            })->values()->toArray();
+
+            // Kiểm tra trạng thái và cập nhật trạng thái của $groupedPersonPrizes
+            $hasActivePrize = collect($nobelPrizes)->contains(function ($prize) {
+                return $prize['status'] === 'active';
+            });
+
+            $status = $hasActivePrize ? 'active' : 'disable';
+
+            return [
+                'year' => $year,
+                'nobelPrize' => $nobelPrizes,
+                'status' => $status,
+            ];
+        })
+            ->filter(function ($group) use ($year) {
+                return $group['year'] != $year;
+            })
+            ->values()
+            ->toArray();
+
+        return response()->json($groupedPersonPrizes);
+    }
 
     //-----------------------------------------------------------------------------------//
     public function show($id)

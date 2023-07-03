@@ -126,3 +126,4 @@ Route::get('logout',[webController::class,'logout']);
 Route::get('/personprizes ',[FeController::class,'personprizes']);
 Route::get('/nobel-prizes/{name}/{year}/{id} ',[FeController::class,'getPrizeDetails']);
 Route::get('/nobel/{namePrize}',[FeController::class,'getPrize']);
+Route::get('/nobel-prizes/{name}/{year}',[FeController::class,'getRelatedAwards']);
