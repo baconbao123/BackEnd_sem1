@@ -46,8 +46,17 @@ class webController extends Controller
 //  Ham add person
     public  function  addperson(Request $request) {
         $validator = Validator::make($request->all(), [
-            'deathdate' => 'nullable|date|before:today|before_or_equal:birthdate',
-            'birthdate' => 'nullable|date|before:today',
+            'deathdate' => [
+                'nullable',
+                'date',
+                'before_or_equal:today',
+                'after:birthdate',
+            ],
+            'birthdate' => [
+                'nullable',
+                'date',
+                'before:today',
+            ],
         ]);
         if ($validator->fails()) {
             return response()->json(['Birthdate or Deathdate is invalid' => $validator->errors()], 400);
@@ -207,6 +216,22 @@ class webController extends Controller
 
 //    Ham update person
     public function updateperson(Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'deathdate' => [
+                'nullable',
+                'date',
+                'before_or_equal:today',
+                'after:birthdate',
+            ],
+            'birthdate' => [
+                'nullable',
+                'date',
+                'before:today',
+            ],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['Birthdate or Deathdate is invalid' => $validator->errors()], 400);
+        }
         $user=persons::find($id);
 
         if($request->has('image') && $request->has('pdf') && $request->has('avatar')) {
