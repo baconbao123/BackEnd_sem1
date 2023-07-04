@@ -78,7 +78,8 @@ class FeController extends Controller
             'person_nobel.motivation',
             'nobel_prizes.status',
             'persons.img',
-            'persons.avatar'
+            'persons.avatar',
+            'persons.status'
         )
             ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
             ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
@@ -96,14 +97,18 @@ class FeController extends Controller
                 $namePrize = $subGroup[0]['nobel_name'];
 
                 $persons = $subGroup->map(function ($person) {
+                    if ($person['status'] !== 'active') {
+                        return null;
+                    }
+
                     return [
-                        'id_person' => $person['person_id'], // Retrieve the person ID
+                        'id_person' => $person['person_id'],
                         'name' => $person['name'],
                         'avatar' => $person['avatar'],
                         'img' => isset($person['img']) ? [$person['img']] : [],
-
+                        'status' => $person['status']
                     ];
-                })->values()->toArray();
+                })->filter()->values()->toArray();
 
                 $motivation = $subGroup[0]['motivation'];
                 $status = $subGroup[0]['status'];
@@ -117,12 +122,19 @@ class FeController extends Controller
                 ];
             })->values()->toArray();
 
-            // Kiểm tra trạng thái và cập nhật trạng thái của $groupedPersonPrizes
+
+            // Check and update the status of $groupedPersonPrizes
             $hasActivePrize = collect($nobelPrizes)->contains(function ($prize) {
                 return $prize['status'] === 'active';
             });
 
             $status = $hasActivePrize ? 'active' : 'disable';
+
+            if (empty(array_filter($nobelPrizes, function ($prize) {
+                return !empty($prize['persons']);
+            }))) {
+                $status = 'disable';
+            }
 
             return [
                 'year' => $year,
@@ -188,10 +200,12 @@ class FeController extends Controller
             ];
         })->values()->toArray();
         // Calculate the total number of persons who received prizes
-        $totalPersons = count($prizes->pluck('name')->unique());
+        $totalPersons = count($prizes->where('status', 'active')->pluck('name')->unique());
 
         // Calculate the total number of prizes
-        $totalPrizes = count($groupedPersonPrizes);
+        $totalPrizes = count(collect($groupedPersonPrizes)->filter(function ($group) {
+            return $group['status'] === 'active';
+        }));
         return response()->json(
             [
                 'groupedPersonPrizes' => $groupedPersonPrizes,
@@ -212,7 +226,8 @@ class FeController extends Controller
             'person_nobel.motivation',
             'nobel_prizes.status',
             'persons.img',
-            'persons.avatar'
+            'persons.avatar',
+            'persons.status'
         )
             ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
             ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
@@ -300,10 +315,10 @@ class FeController extends Controller
             ->leftJoin('life_story', 'persons.id', '=', 'life_story.person_id')
             ->where('persons.id', $id)
             ->first();
-        
+
         $nobelNames = $persons->nobel()->pluck('nobel_name');
         $persons->nobelNames = $nobelNames;
-        
+
         $nobelYears = $persons->nobel->pluck('nobel_year');
         $persons->nobelYears = $nobelYears;
 
@@ -318,7 +333,7 @@ class FeController extends Controller
         $persons->motivations = $motivations;
         return response()->json(['persons' => $persons]);
     }
-    
+
 
     public function allshow()
     {
