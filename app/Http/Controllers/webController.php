@@ -499,13 +499,36 @@ class webController extends Controller
     public function pn()
     {
         $pn = person_nobel::where('status', 'active')->orderByDesc('created_at')->get();
+        foreach ($pn as $item) {
+           $person=persons::find($item->person_id);
+           $item->setAttribute('person_name',$person->name);
+        }
+        foreach ($pn as $item) {
+            $prize=nobel_prizes::find($item->nobel_id);
+            $item->setAttribute('prize_name',$prize->nobel_name);
+        }
+        foreach ($pn as $item) {
+            $prize=nobel_prizes::find($item->nobel_id);
+            $item->setAttribute('prize_year',$prize->nobel_year);
+        }
         return response()->json($pn);
     }
     //    ham show disable pn
     public function pndisable()
     {
         $pn = person_nobel::where('status', 'disable')->orderByDesc('created_at')->get();
-
+        foreach ($pn as $item) {
+            $person=persons::find($item->person_id);
+            $item->setAttribute('person_name',$person->name);
+        }
+        foreach ($pn as $item) {
+            $prize=nobel_prizes::find($item->nobel_id);
+            $item->setAttribute('prize_name',$prize->nobel_name);
+        }
+        foreach ($pn as $item) {
+            $prize=nobel_prizes::find($item->nobel_id);
+            $item->setAttribute('prize_year',$prize->nobel_year);
+        }
         return response()->json($pn);
     }
     //    ham add pn
