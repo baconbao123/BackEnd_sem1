@@ -14,6 +14,8 @@ use App\Models\users;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use function Nette\Utils\setAttribute;
+
 class webController extends Controller
 {
     //    Person
@@ -402,6 +404,10 @@ class webController extends Controller
     public function life()
     {
         $life = life_story::where('status', 'active')->orderByDesc('created_at')->get();
+        foreach ($life as $l) {
+            $person=persons::find($l->person_id);
+            $l->setAttribute('person_status',$person->status);
+        }
         return response()->json($life);
     }
     //    ham show life disable
@@ -501,11 +507,14 @@ class webController extends Controller
         $pn = person_nobel::where('status', 'active')->orderByDesc('created_at')->get();
         foreach ($pn as $item) {
            $person=persons::find($item->person_id);
+
            $item->setAttribute('person_name',$person->name);
+            $item->setAttribute('person_status',$person->status);
         }
         foreach ($pn as $item) {
             $prize=nobel_prizes::find($item->nobel_id);
             $item->setAttribute('prize_name',$prize->nobel_name);
+            $item->setAttribute('prize_status',$prize->status);
         }
         foreach ($pn as $item) {
             $prize=nobel_prizes::find($item->nobel_id);
@@ -519,11 +528,14 @@ class webController extends Controller
         $pn = person_nobel::where('status', 'disable')->orderByDesc('created_at')->get();
         foreach ($pn as $item) {
             $person=persons::find($item->person_id);
+
             $item->setAttribute('person_name',$person->name);
+            $item->setAttribute('person_status',$person->status);
         }
         foreach ($pn as $item) {
             $prize=nobel_prizes::find($item->nobel_id);
             $item->setAttribute('prize_name',$prize->nobel_name);
+            $item->setAttribute('prize_status',$prize->status);
         }
         foreach ($pn as $item) {
             $prize=nobel_prizes::find($item->nobel_id);
@@ -750,7 +762,23 @@ class webController extends Controller
         session(['user' => null]);
         return response()->json('logout sucess');
     }
+//CHANGE PASSWORD
+    public  function changePassword (Request $request) {
+       $user=users::where('email','admin@gmail.com')->first();
 
+       $oldPass=$request->input('oldPass');
+//     dd($request->input('Pass'));
+       if($oldPass===$user->password) {
+           $user->password=$request->input('Pass');
+
+            $user->save();
+           return response()->json('SUCCESS');
+       }
+       else {
+           return response()->json('Fail',400);
+       }
+
+}
 
 
 

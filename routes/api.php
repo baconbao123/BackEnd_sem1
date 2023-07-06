@@ -103,7 +103,8 @@ Route::get('/disableblog',[WebController::class,'showdisableblog']);
 Route::post('addblog',[webController::class,'addblog']);
 Route::put('updateblog/{id}',[webController::class,'updateblog']);
 Route::delete('deleteblog/{id}',[webController::class,'deleteblog']);
-
+//Change Password
+Route::put('changePassword',[webController::class,'changePassword']);
 
 
 
