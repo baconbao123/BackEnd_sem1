@@ -12,12 +12,12 @@ class life_story extends Model
         'id',
         'person_id',
         'life',
-        'childhood',
+
         'education',
         'experiment',
         'struggles',
         'time_line',
-        'personalities',
+       
         'achievements_detail',
         'quote',
         'books',

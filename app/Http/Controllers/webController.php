@@ -422,12 +422,12 @@ class webController extends Controller
         $life =  new life_story([
             'person_id' => $request->input('person_id'),
             'life' => $request->input('life'),
-            'childhood' => $request->input('childhood'),
+
             'education' => $request->input('education'),
             'experiment' => $request->input('experiment'),
             'struggles' => $request->input('struggles'),
             'time_line' => $request->input('time_line'),
-            'personalities' => $request->input('personalities'),
+
             'achievements_detail' => $request->input('achievements_detail'),
             'quote' => $request->input('quote'),
             'books' => $request->input('books'),
