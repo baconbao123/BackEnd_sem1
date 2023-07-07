@@ -158,7 +158,7 @@ class FeController extends Controller
         )
             ->join('person_nobel', 'persons.id', '=', 'person_nobel.person_id')
             ->join('nobel_prizes', 'person_nobel.nobel_id', '=', 'nobel_prizes.id')
-            ->where('nobel_prizes.nobel_name', 'LIKE', '%' . strtolower(str_replace([' ', 'Prize'], '', $namePrize)) . '%')
+            ->where('nobel_prizes.nobel_name', 'LIKE', '%' . strtolower(str_replace([' ', 'Prize'],[' ','in'] , $namePrize)) . '%')
             ->orderBy('nobel_year', 'desc')
             ->orderBy('nobel_name', 'asc')
             ->get();
