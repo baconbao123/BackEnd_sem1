@@ -407,6 +407,8 @@ class webController extends Controller
         foreach ($life as $l) {
             $person=persons::find($l->person_id);
             $l->setAttribute('person_status',$person->status);
+            $l->setAttribute('person_name',$person->name);
+
         }
         return response()->json($life);
     }
